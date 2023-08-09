@@ -1,58 +1,26 @@
-const { connect, connection } = require('mongoose');
+const connection = require('../config/connection');
 const User = require('../models/users');
 const Thought = require('../models/thoughts');
-const Friend = require('../models/friend');
-const Reaction = require('../models/reaction');
+// const Reaction = require('../models/reactions');
+const Userdata = require ('./user')
+const Thoughtdata = require ('./thought')
+const Reactiondata = require ('./reaction')
 
-const {
-    generateUsers,
-    generateThoughts,
-    generateReactions,
-    generateFriends
-} = require('./data');
+console.log ('starting seeding ...')
 
-connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/social-network', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false
-});
-
-connection.on("error", (err) => {
-    console.error("MongoDB connection error:", err);
-    process.exit(1);
-  });
-
-  connection.once("open", async () => {
-    console.log("Mongoose connected successfully");
+connection.once('open', async () => {
+    console.log ('seeding ...')
     try {
         await User.deleteMany({});
         await Thought.deleteMany({});
-        await Friend.deleteMany({});
-        await Reaction.deleteMany({});
-
-        const users = generateUsers(20);
-
-        const createdUsers = await User.create(users);
-
-        const thoughts = generateThoughts(createdUsers, 10);
-
-        const createdThoughts = await Thought.create(thoughts);
-        
-        const reactions = generateReactions(createdThoughts, 10);
-
-        const createdReactions = await Reaction.create(reactions);
-
-        const friends = generateFriends(createdUsers, 10);
-
-        const createdFriends = await Friend.create(friends);
-
-        console.log('all done!');
-        process.exit(0);
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
+        await User.insertMany(Userdata);
+        await Thought.insertMany(Thoughtdata);
+        // await Reaction.insertMany(Reactiondata);
+        console.log ('seeding complete')
     }
-  }
-    );
+    catch (err) {
+        console.error(err);
+        process.exit(0);
+    }
+});
 

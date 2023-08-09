@@ -94,22 +94,22 @@ const userController = {
     // add friend
     addFriend: async (req, res) => {
         try {
-            const { id } = req.params;
-            const { friendId } = req.body;
-      
+            //const { user_id } = req.params.userId;
+            //const { friendId } = req.params.friendId;
+     
             // Validate the user ID
-            if (!mongoose.Types.ObjectId.isValid(id)) {
+            if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
               return res.status(400).json({ message: "Invalid user ID" });
             }
       
             // Validate the friend ID
-            if (!mongoose.Types.ObjectId.isValid(friendId)) {
+            if (!mongoose.Types.ObjectId.isValid(req.params.friendId)) {
               return res.status(400).json({ message: "Invalid friend ID" });
             }
       
             const user = await User.findByIdAndUpdate(
-              id,
-              { $addToSet: { friends: friendId } },
+              req.params.userId ,
+              { $addToSet: { friends: req.params.friendId } },
               { new: true }
             );
       
@@ -126,22 +126,22 @@ const userController = {
     // remove friend
     removeFriend: async (req, res) => {
         try {
-            const { id } = req.params;
-            const { friendId } = req.body;
+            // const { id } = req.params;
+            // const { friendId } = req.body;
       
             // Validate the user ID
-            if (!mongoose.Types.ObjectId.isValid(id)) {
+            if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
               return res.status(400).json({ message: "Invalid user ID" });
             }
       
             // Validate the friend ID
-            if (!mongoose.Types.ObjectId.isValid(friendId)) {
+            if (!mongoose.Types.ObjectId.isValid(req.params.friendId)) {
               return res.status(400).json({ message: "Invalid friend ID" });
             }
       
             const user = await User.findByIdAndUpdate(
-              id,
-              { $pull: { friends: friendId } },
+              req.params.userId,
+              { $pull: { friends: req.params.friendId } },
               { new: true }
             );
       

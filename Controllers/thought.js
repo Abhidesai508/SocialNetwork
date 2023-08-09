@@ -79,7 +79,7 @@ const thoughtController = {
     createReaction: async (req, res) => {
         try {
             const reaction = await Thought.findOneAndUpdate(
-                { _id: req.params.id },
+                { _id: req.params.thoughtId },
                 { $push: { reactions: req.body } },
                 { new: true }
             );
@@ -97,8 +97,8 @@ const thoughtController = {
     deleteReaction: async (req, res) => {
         try {
             const reaction = await Thought.findOneAndUpdate(
-                { _id: req.params.id },
-                { $pull: { reactions: { reactionId: req.params.reactionId } } },
+                { _id: req.params.thoughtId },
+                { $pull: { reactions: { _id: req.params.reactionId } } },
                 { new: true }
             );
             if (!reaction) {
